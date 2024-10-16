@@ -7,9 +7,15 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities.Client;
 
-public interface ClientRepository extends CrudRepository <Client, Long> {
+public interface ClientRepository extends CrudRepository<Client, Long> {
 
-    @Query("SELECT c FROM Client c JOIN FETCH c.addresses")
+    @Query("select c from Client c left join fetch c.addresses where c.id=?1")
+    Optional<Client> findOneWithAddresses(Long id);
+
+    @Query("select c from Client c left join fetch c.invoices where c.id=?1")
+    Optional<Client> findOneWithInvoices(Long id);
+
+    @Query("select c from Client c left join fetch c.invoices left join fetch c.addresses where c.id=?1")
     Optional<Client> findOne(Long id);
 
 }

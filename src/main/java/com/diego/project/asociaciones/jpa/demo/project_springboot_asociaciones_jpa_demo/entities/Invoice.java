@@ -1,12 +1,6 @@
 package com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invoices")
@@ -25,13 +19,11 @@ public class Invoice {
 
     public Invoice() {
     }
-    
 
     public Invoice(String description, double total) {
         this.description = description;
         this.total = total;
     }
-
 
     public Invoice(String description, double total, Client client) {
         this.description = description;
@@ -73,8 +65,9 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "{id=" + id + ", client=" + client + ", description=" + description + ", total=" + total + "}";
+        return "{id=" + id +
+                ", description=" + description +
+                ", total=" + total + "}";
     }
-
 
 }

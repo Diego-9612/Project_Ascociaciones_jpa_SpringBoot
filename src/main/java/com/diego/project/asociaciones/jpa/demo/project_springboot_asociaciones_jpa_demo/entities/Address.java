@@ -1,10 +1,6 @@
 package com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "addresses")
@@ -58,8 +54,6 @@ public class Address {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((street == null) ? 0 : street.hashCode());
-        result = prime * result + ((number == null) ? 0 : number.hashCode());
         return result;
     }
 
@@ -76,16 +70,6 @@ public class Address {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
-            return false;
-        if (street == null) {
-            if (other.street != null)
-                return false;
-        } else if (!street.equals(other.street))
-            return false;
-        if (number == null) {
-            if (other.number != null)
-                return false;
-        } else if (!number.equals(other.number))
             return false;
         return true;
     }

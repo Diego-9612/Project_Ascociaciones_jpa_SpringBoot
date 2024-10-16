@@ -1,19 +1,14 @@
 package com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo;
 
-import java.util.Optional;
-import java.util.Arrays;
+import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.Repositories.ClientRepository;
-import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.Repositories.InvoiceRepository;
-import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities.Address;
-import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities.Client;
-import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities.Invoice;
+import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.Repositories.*;
+import com.diego.project.asociaciones.jpa.demo.project_springboot_asociaciones_jpa_demo.entities.*;
 
 @SpringBootApplication
 public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandLineRunner {
@@ -30,120 +25,147 @@ public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandL
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeAddressFindById();
+		oneToManyInvoiceBidireccionalFindById();
+	}
+
+	@Transactional
+	public void oneToManyInvoiceBidireccionalFindById() {
+		Optional<Client> optionalClient = clientRepository.findOne(1L);
+
+		optionalClient.ifPresent(client -> {
+
+			Invoice invoice1 = new Invoice("compras de la casa", 5000L);
+			Invoice invoice2 = new Invoice("compras de oficina", 8000L);
+
+			client.addInvoice(invoice1).addInvoice(invoice2);
+
+			clientRepository.save(client);
+
+			System.out.println(client);
+		});
+	}
+
+	@Transactional
+	public void oneToManyInvoiceBidireccional() {
+		Client client = new Client("Fran", "Moras");
+
+		Invoice invoice1 = new Invoice("compras de la casa", 5000L);
+		Invoice invoice2 = new Invoice("compras de oficina", 8000L);
+
+		client.addInvoice(invoice1).addInvoice(invoice2);
+
+		clientRepository.save(client);
+
+		System.out.println(client);
 	}
 
 	@Transactional
 	public void removeAddressFindById() {
+		Optional<Client> optionalClient = clientRepository.findById(2L);
+		optionalClient.ifPresent(client -> {
+			Address address1 = new Address("El verjel", 1234);
+			Address address2 = new Address("Vasco de Gama", 9875);
 
-		Optional<Client> optionalCliente = clientRepository.findOne(2L);
-		optionalCliente.ifPresent(client -> {
-			Address address = new Address("Parana", 1234);
-			Address address2 = new Address("Palermo", 1234);
-
-			client.setAddresses(Arrays.asList(address, address2));
+			Set<Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+			client.setAddresses(addresses);
 
 			clientRepository.save(client);
+
 			System.out.println(client);
 
-			// Buscar el cliente con ID 11
-			Optional<Client> optionalCliente2 = clientRepository.findById(2L);
-			optionalCliente2.ifPresent(c -> {
-					c.getAddresses().remove(address2);
-					clientRepository.save(c);
-					System.out.println("Dirección eliminada: " + address2);
-					System.out.println("Cliente actualizado: " + c);
-
+			Optional<Client> optionalClient2 = clientRepository.findOneWithAddresses(2L);
+			optionalClient2.ifPresent(c -> {
+				c.getAddresses().remove(address2);
+				clientRepository.save(c);
+				System.out.println(c);
 			});
 		});
+
 	}
 
 	@Transactional
 	public void removeAddress() {
-		Client client = new Client("Juan", "Perez");
+		Client client = new Client("Fran", "Moras");
 
-		Address address = new Address("Parana", 1234);
-		Address address2 = new Address("Palermo", 1234);
+		Address address1 = new Address("El verjel", 1234);
+		Address address2 = new Address("Vasco de Gama", 9875);
 
+		client.getAddresses().add(address1);
 		client.getAddresses().add(address2);
-		client.getAddresses().add(address);
 
 		clientRepository.save(client);
+
 		System.out.println(client);
 
-		// Buscar el cliente con ID 11
-		Optional<Client> optionalCliente = clientRepository.findById(11L);
-		optionalCliente.ifPresent(c -> {
-			// Verificar si la dirección está asociada al cliente
-			if (c.getAddresses().contains(address2)) {
-				// Eliminar la dirección del cliente
-				c.getAddresses().remove(address2);
-				clientRepository.save(c);
-				System.out.println("Dirección eliminada: " + address2);
-				System.out.println("Cliente actualizado: " + c);
-			} else {
-				System.out.println("La dirección no está asociada a este cliente.");
-			}
+		Optional<Client> optionalClient = clientRepository.findById(3L);
+		optionalClient.ifPresent(c -> {
+			c.getAddresses().remove(address1);
+			clientRepository.save(c);
+			System.out.println(c);
 		});
-
 	}
 
 	@Transactional
 	public void oneToManyFindById() {
+		Optional<Client> optionalClient = clientRepository.findById(2L);
+		optionalClient.ifPresent(client -> {
+			Address address1 = new Address("El verjel", 1234);
+			Address address2 = new Address("Vasco de Gama", 9875);
 
-		Optional<Client> optionalCliente = clientRepository.findById(2L);
-		optionalCliente.ifPresent(client -> {
-			Address address = new Address("Parana", 1234);
-			Address address2 = new Address("Palermo", 1234);
-
-			client.setAddresses(Arrays.asList(address, address2));
+			Set<Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+			client.setAddresses(addresses);
 
 			clientRepository.save(client);
-			System.out.println(client);
 
+			System.out.println(client);
 		});
+
 	}
 
 	@Transactional
 	public void oneToMany() {
-		Client client = new Client("Juan", "Perez");
+		Client client = new Client("Fran", "Moras");
 
-		Address address = new Address("Parana", 1234);
-		Address address2 = new Address("Palermo", 1234);
+		Address address1 = new Address("El verjel", 1234);
+		Address address2 = new Address("Vasco de Gama", 9875);
 
+		client.getAddresses().add(address1);
 		client.getAddresses().add(address2);
-		client.getAddresses().add(address);
 
 		clientRepository.save(client);
+
 		System.out.println(client);
 	}
 
 	@Transactional
 	public void manyToOne() {
 
-		Client client = new Client("Jhon", "Moncayo");
+		Client client = new Client("John", "Doe");
 		clientRepository.save(client);
 
-		Invoice invoice = new Invoice("Compras de Accesorios para el Hogar ", 40.800);
+		Invoice invoice = new Invoice("compras de oficina", 2000L);
 		invoice.setClient(client);
-		Invoice invoiceBD = invoiceRepository.save(invoice);
-		System.out.println(invoiceBD);
-
+		Invoice invoiceDB = invoiceRepository.save(invoice);
+		System.out.println(invoiceDB);
 	}
 
 	@Transactional
-	public void manyToOne2() {
+	public void manyToOneFindByIdClient() {
 
-		Optional<Client> optionalCliente = clientRepository.findById(1L);
-		if (optionalCliente.isPresent()) {
-			Client client = optionalCliente.orElseThrow();
-			Invoice invoice = new Invoice("Compras de Accesorios para el Hogar ", 60.700);
+		Optional<Client> optionalClient = clientRepository.findById(1L);
+
+		if (optionalClient.isPresent()) {
+			Client client = optionalClient.orElseThrow();
+
+			Invoice invoice = new Invoice("compras de oficina", 2000L);
 			invoice.setClient(client);
-			Invoice invoiceBD = invoiceRepository.save(invoice);
-			System.out.println(invoiceBD);
-
+			Invoice invoiceDB = invoiceRepository.save(invoice);
+			System.out.println(invoiceDB);
 		}
-
 	}
 
 }
