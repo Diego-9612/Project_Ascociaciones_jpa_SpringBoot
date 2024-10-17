@@ -25,6 +25,10 @@ public class Client {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private Set<Invoice> invoices;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "id_client_details")
+    private ClientDetails clientDetails;
+
     public Client() {
         addresses = new HashSet<>();
         invoices = new HashSet<>();
@@ -82,13 +86,22 @@ public class Client {
         return this;
     }
 
+    public ClientDetails getClientDetails() {
+        return clientDetails;
+    }
+
+    public void setClientDetails(ClientDetails clientDetails) {
+        this.clientDetails = clientDetails;
+    }
+
     @Override
     public String toString() {
         return "{id=" + id +
                 ", name=" + name +
                 ", lastname=" + lastname +
                 ",Invoices=" + invoices +
-                ", Addresses=" + addresses + "}";
+                ", Addresses=" + addresses + 
+                "ClientDetails=" + clientDetails +"}";
     }
 
 }

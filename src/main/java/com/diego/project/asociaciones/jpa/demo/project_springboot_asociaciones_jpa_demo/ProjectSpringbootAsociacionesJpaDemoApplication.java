@@ -19,15 +19,55 @@ public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandL
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
+	@Autowired
+	private ClientDetailsRepository clientDetailsRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectSpringbootAsociacionesJpaDemoApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyInvoiceBidireccionalFindById();
+		oneToOne();
 	}
 
+	public void oneToOneFindById() {
+		ClientDetails clientDetails = new ClientDetails(true, 6000);
+		clientDetailsRepository.save(clientDetails);
+
+		Optional<Client> optionalClient = clientRepository.findOne(2L);
+		optionalClient.ifPresent(client -> {
+			client.setClientDetails(clientDetails);
+			clientRepository.save(client);
+			System.out.println(client);
+		});
+
+	}
+
+	public void oneToOne() {
+		ClientDetails clientDetails = new ClientDetails(true, 6000);
+		clientDetailsRepository.save(clientDetails);
+
+		Client client = new Client("Manuel", "Rosero");
+		client.setClientDetails(clientDetails);
+		clientRepository.save(client);
+
+		System.out.println(client);
+
+	}
+
+	/**
+	 * @Transactional
+	 *                public void oneToOne() {
+	 *                Client client = new Client("Manuel", "Rosero");
+	 *                clientRepository.save(client);
+	 * 
+	 *                ClientDetails clientDetails = new ClientDetails(true, 6000);
+	 *                clientDetails.setClient(client);
+	 * 
+	 *                clientDetailsRepository.save(clientDetails);
+	 *                }
+	 */
 	@Transactional
 	public void oneToManyInvoiceBidireccionalFindById() {
 		Optional<Client> optionalClient = clientRepository.findOne(1L);
