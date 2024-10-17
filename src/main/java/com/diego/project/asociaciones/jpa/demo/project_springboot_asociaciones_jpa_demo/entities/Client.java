@@ -25,8 +25,7 @@ public class Client {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private Set<Invoice> invoices;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "id_client_details")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private ClientDetails clientDetails;
 
     public Client() {
@@ -92,6 +91,13 @@ public class Client {
 
     public void setClientDetails(ClientDetails clientDetails) {
         this.clientDetails = clientDetails;
+        clientDetails.setClient(this);
+    }
+
+    public void removeClientDetails(ClientDetails clientDetails) {
+        clientDetails.setClient(null);
+        this.clientDetails = null;
+
     }
 
     @Override
@@ -100,8 +106,8 @@ public class Client {
                 ", name=" + name +
                 ", lastname=" + lastname +
                 ",Invoices=" + invoices +
-                ", Addresses=" + addresses + 
-                "ClientDetails=" + clientDetails +"}";
+                ", Addresses=" + addresses +
+                "ClientDetails=" + clientDetails + "}";
     }
 
 }

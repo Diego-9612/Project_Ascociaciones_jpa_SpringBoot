@@ -28,7 +28,35 @@ public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandL
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOne();
+		oneToOneBidireccionalFindById();
+	}
+
+	public void oneToOneBidireccionalFindById() {
+
+		Optional<Client> optionalClient = clientRepository.findOne(2L);
+		optionalClient.ifPresent(client -> {
+			ClientDetails clientDetails = new ClientDetails(true, 4567);
+
+			client.setClientDetails(clientDetails);
+
+			clientRepository.save(client);
+
+			System.out.println(client);
+		});
+	}
+
+	public void oneToOneBidireccional() {
+
+		Client client = new Client("Pepito", "Perez");
+
+		ClientDetails clientDetails = new ClientDetails(true, 4567);
+
+		client.setClientDetails(clientDetails);
+
+		clientRepository.save(client);
+
+		System.out.println(client);
+
 	}
 
 	public void oneToOneFindById() {
