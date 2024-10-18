@@ -34,8 +34,186 @@ public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandL
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToManyFindById();
-		;
+		manyToManyBiDireccionalRemove();
+
+	}
+
+	@Transactional
+	public void manyToManyRemoveBidireccionalFind() {
+
+		Optional<Students> studentOptional1 = studentRepository.findOneCourses(1L);
+		Optional<Students> studentOptional2 = studentRepository.findOneCourses(2L);
+
+		Students student1 = studentOptional1.get();
+		Students student2 = studentOptional2.get();
+
+		Course course1 = courseRepository.findOneStudents(1L).get();
+		Course course2 = courseRepository.findOneStudents(2L).get();
+
+		// student1.setCourses(Set.of(course1, course2));
+		// student2.setCourses(Set.of(course2));
+		student1.addCourse(course1);
+		student1.addCourse(course2);
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student1, student2));
+
+		System.out.println(student1);
+		System.out.println(student2);
+
+		Optional<Students> studentOptionalDb = studentRepository.findOneCourses(1L);
+		if (studentOptionalDb.isPresent()) {
+
+			Students studentDb = studentOptionalDb.get();
+			Optional<Course> courseOptionalDb = courseRepository.findOneStudents(1L);
+
+			if (courseOptionalDb.isPresent()) {
+				Course courseDb = courseOptionalDb.get();
+				studentDb.removeCourse(courseDb);
+
+				studentRepository.save(studentDb);
+				System.out.println(studentDb);
+			}
+		}
+	}
+
+	@Transactional
+	public void manyToManyBidireccionalFind() {
+
+		Optional<Students> studentOptional1 = studentRepository.findOneCourses(1L);
+		Optional<Students> studentOptional2 = studentRepository.findOneCourses(2L);
+
+		Students student1 = studentOptional1.get();
+		Students student2 = studentOptional2.get();
+
+		Course course1 = courseRepository.findOneStudents(1L).get();
+		Course course2 = courseRepository.findOneStudents(2L).get();
+
+		// student1.setCourses(Set.of(course1, course2));
+		// student2.setCourses(Set.of(course2));
+		student1.addCourse(course1);
+		student1.addCourse(course2);
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student1, student2));
+
+		System.out.println(student1);
+		System.out.println(student2);
+	}
+
+	public void manyToManyBiDireccionalRemove() {
+
+		Students student1 = new Students("Felipe", "Garcia");
+		Students student2 = new Students("Diego", "Guerra");
+		Students student3 = new Students("Roman", "Perez");
+		Students student4 = new Students("Jesus", "Cacho");
+
+		Course course1 = new Course("Java master", "Diego Guerrero");
+		Course course2 = new Course("Bases de datos con mySql", "Benito Camelas");
+		Course course3 = new Course("SpringJava", "Lucho Portuano");
+
+		// student1.setCourses(Set.of(course1, course2));
+		// student2.setCourses(Set.of(course3));
+		// student3.setCourses(Set.of(course3, course1));
+		// student4.setCourses(Set.of(course1, course2, course3));
+
+		student1.addCourse(course1);
+		student1.addCourse(course3);
+		student2.addCourse(course2);
+		student3.addCourse(course2);
+		student3.addCourse(course3);
+		student4.addCourse(course1);
+
+		studentRepository.saveAll(Set.of(student1, student2, student3, student4));
+
+		System.out.println(student1);
+		System.out.println(student2);
+		System.out.println(student3);
+		System.out.println(student4);
+
+	}
+
+	public void manyToManyBiDireccional() {
+
+		Students student1 = new Students("Felipe", "Garcia");
+		Students student2 = new Students("Diego", "Guerra");
+		Students student3 = new Students("Roman", "Perez");
+		Students student4 = new Students("Jesus", "Cacho");
+
+		Course course1 = new Course("Java master", "Diego Guerrero");
+		Course course2 = new Course("Bases de datos con mySql", "Benito Camelas");
+		Course course3 = new Course("SpringJava", "Lucho Portuano");
+
+		// student1.setCourses(Set.of(course1, course2));
+		// student2.setCourses(Set.of(course3));
+		// student3.setCourses(Set.of(course3, course1));
+		// student4.setCourses(Set.of(course1, course2, course3));
+
+		student1.addCourse(course1);
+		student1.addCourse(course3);
+		student2.addCourse(course2);
+		student3.addCourse(course2);
+		student3.addCourse(course3);
+		student4.addCourse(course1);
+
+		studentRepository.saveAll(Set.of(student1, student2, student3, student4));
+
+		System.out.println(student1);
+		System.out.println(student2);
+		System.out.println(student3);
+		System.out.println(student4);
+
+		Optional<Students> optionalStudentBd = studentRepository.findOneCourses(3L);
+		if (optionalStudentBd.isPresent()) {
+
+			Students studentsBd = optionalStudentBd.get();
+
+			Optional<Course> optionalCourseBd = courseRepository.findOneStudents(2L);
+			if (optionalCourseBd.isPresent()) {
+				Course courseBd = optionalCourseBd.get();
+				studentsBd.removeCourse(courseBd);
+				studentRepository.save(studentsBd);
+				System.out.println(studentsBd);
+			}
+
+		}
+
+	}
+
+	public void manyToManyFindByIdRemove() {
+
+		Optional<Students> optionalStudent1 = studentRepository.findById(3L);
+		Optional<Students> optionalStudent2 = studentRepository.findById(5L);
+
+		Students student1 = optionalStudent1.get();
+		Students student2 = optionalStudent2.get();
+
+		Course course1 = courseRepository.findById(1L).get();
+		Course course2 = courseRepository.findById(2L).get();
+
+		student1.setCourses(Set.of(course1, course2));
+		student2.setCourses(Set.of(course2));
+
+		studentRepository.saveAll(Set.of(student1, student2));
+
+		System.out.println(student1);
+		System.out.println(student2);
+
+		Optional<Students> optionalStudentBd = studentRepository.findOneCourses(3L);
+		if (optionalStudentBd.isPresent()) {
+
+			Students studentsBd = optionalStudentBd.get();
+
+			Optional<Course> optionalCourseBd = courseRepository.findById(2L);
+			if (optionalCourseBd.isPresent()) {
+				Course courseBd = optionalCourseBd.get();
+				studentsBd.getCourses().remove(courseBd);
+				studentRepository.save(studentsBd);
+				System.out.println(studentsBd);
+			}
+
+		}
+
 	}
 
 	public void manyToManyFindById() {
