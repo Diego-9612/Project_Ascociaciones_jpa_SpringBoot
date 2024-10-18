@@ -22,13 +22,66 @@ public class ProjectSpringbootAsociacionesJpaDemoApplication implements CommandL
 	@Autowired
 	private ClientDetailsRepository clientDetailsRepository;
 
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
+	private CourseRepository courseRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectSpringbootAsociacionesJpaDemoApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOneBidireccionalFindById();
+		manyToManyFindById();
+		;
+	}
+
+	public void manyToManyFindById() {
+
+		Optional<Students> optionalStudent1 = studentRepository.findById(3L);
+		Optional<Students> optionalStudent2 = studentRepository.findById(5L);
+
+		Students student1 = optionalStudent1.get();
+		Students student2 = optionalStudent2.get();
+
+		Course course1 = courseRepository.findById(1L).get();
+		Course course2 = courseRepository.findById(2L).get();
+
+		student1.setCourses(Set.of(course1, course2));
+		student2.setCourses(Set.of(course2));
+
+		studentRepository.saveAll(Set.of(student1, student2));
+
+		System.out.println(student1);
+		System.out.println(student2);
+
+	}
+
+	public void manyToMany() {
+
+		Students student1 = new Students("Felipe", "Garcia");
+		Students student2 = new Students("Diego", "Guerra");
+		Students student3 = new Students("Roman", "Perez");
+		Students student4 = new Students("Jesus", "Cacho");
+
+		Course course1 = new Course("Java master", "Diego Guerrero");
+		Course course2 = new Course("Bases de datos con mySql", "Benito Camelas");
+		Course course3 = new Course("SpringJava", "Lucho Portuano");
+
+		student1.setCourses(Set.of(course1, course2));
+		student2.setCourses(Set.of(course3));
+		student3.setCourses(Set.of(course3, course1));
+		student4.setCourses(Set.of(course1, course2, course3));
+
+		studentRepository.saveAll(Set.of(student1, student2, student3, student4));
+
+		System.out.println(student1);
+		System.out.println(student2);
+		System.out.println(student3);
+		System.out.println(student4);
+
 	}
 
 	public void oneToOneBidireccionalFindById() {
